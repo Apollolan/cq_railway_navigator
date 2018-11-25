@@ -1,88 +1,57 @@
-var map = {};
 
-
-var map_str =
-    '1号线：朝天门、小什字、较场口、七星岗、两路口、鹅岭、大坪、石油路、歇台子、石桥铺、高庙村、马家岩、小龙坎、沙坪坝、杨公桥、烈士墓、磁器口、石井坡、双碑、赖家桥、微电园、陈家桥、大学城、尖顶坡\n' +
-    '2号线：较场口、临江门、黄花园、大溪沟、曾家岩、牛角沱、李子坝、佛图关、大坪、袁家岗、谢家湾、杨家坪、动物园、大堰村、马王场、平安、大渡口、新山村、天堂堡、建桥、金家湾、刘家坝、白居寺、大江、鱼洞\n' +
-    '2号线支线：天堂堡、半山、田坝、中梁山西\n' +
-    '3号线：鱼洞、金竹、鱼胡路、学堂湾、大山村、花溪、岔路口、九公里、麒龙、八公里、二塘、六公里、五公里、四公里、南坪、工贸、铜元局、两路口、牛角沱、华新街、观音桥、红旗河沟、嘉州路、郑家院子、唐家院子、狮子坪、重庆北站南广场、龙头寺、童家院子、金渝、金童路、鸳鸯、园博园、翠云、长福路、回兴、双龙、碧津、江北机场、双凤桥、空港广场、高堡湖、观月路、莲花、举人坝\n' +
-    '4号线：新牌坊、民安大道、重庆北站、保税港、寸滩、黑石子、太平冲、唐家沱、干坝子、鱼嘴、复盛、王家城、生基煲、龙兴、高石塔、普福、桐梓林、石船、石船北\n' +
-    '5号线：跳蹬、华岩中心、金建路、中梁山、半山、华成路、华岩寺、重庆西、凤西路、巴山、石新路、石桥铺、歇台子、红岩村、忠恕沱、大石坝、大龙山、冉家坝、幸福广场、人和、和睦路、重光、湖霞街、丹鹤、园博中心、翠云西、腾芳大道、中央公园西站、椿萱大道、悦港大道\n' +
-    '5号线支线：几江、鼎山、琅山、西彭、西彭北、石塔村、陶家、黑岩村、九龙园区、中梁山公园、跳蹬、文家湾、长征厂、白居寺、钓鱼嘴、外河坪南、李家沱、五龙庙、重庆南站、滩子口、杨家坪、奥体中心、歇台子\n' +
-    '6号线：茶园、邱家湾、长生桥、刘家坪、上新街、小什字、大剧院、江北城、五里店、红土地、黄泥磅、红旗河沟、花卉园、大龙山、冉家坝、光电园、大竹林、康庄、九曲河、礼嘉、金山寺、曹家湾、蔡家、向家岗、龙凤溪、状元碑、天生、北碚\n' +
-    '6号线支线1：礼嘉、平场、黄茅坪、高义口、国博中心、悦来、甘院子、草家湾、麦子坝、刘家院子、胡家湾、雨台山、胡家桥、红岩坪、沙河坝\n' +
-    '6号线支线2：茶园东、任家山、梨湾、樵坪山、商贸城南、迎龙、商贸城北、小湾、广阳岛、孵化楼、银湖\n' +
-    '7号线：双福、九龙园区、石板南、石板北、苗木基地、白市驿南、白市驿、含谷、华新村、中柱村、周家店、微电园、西永、土主、团结村、回龙坝、永远村、歇马、曹家坝、科技园、状元碑\n' +
-    '8号线：界石、界石北、鹿角南、鹿角北、茶园、天文寺、刘家坪、广阳、望江、卧龙、干坝子、上石梁、王家沟、复盛、方元坝、和平村、贺家桥、御临、人民村\n' +
-    '9号线：天梨路、沙坪坝、小龙坎、土湾、半山路、化龙桥、李家坪、蚂蝗梁、观音桥、鲤鱼池、刘家台、江北城、五里店、海尔路、保税港、何家梁、上果路、上湾路、服装城大道、回兴、桐岩村、悦龙大道、中央公园、望乡台、花石沟\n' +
-    '10号线：兰花路、南湖、南岸区府、南坪、南滨路、七星岗、人民广场、曾家岩、鲤鱼池、红土地、龙头寺公园、重庆北站南广场、重庆北站、民心佳园、三亚湾、上湾路、环山公园、长河、江北机场、渝北广场、鹿山、中央公园东站、中央公园、中央公园西站、悦来、王家庄\n' +
-    '11号线：涂山、弹子石、弹子石北、大佛寺、鸡冠石、太平冲、五里坪、石坪、工业园区\n' +
-    '12号线：金凤南、白市驿、重庆西、二郎、巴国城、双山公园、平安、重钢、九宫庙、外河坪北、李家沱、李家沱东、九公里、鹿角南\n' +
-    '13号线：虎溪、大学城、建新村、三岔河、黑松林、青木关、凤凰、土主、同兴、童家溪、断碑、向家岗、团石堡、天印村、石龙村、悦来\n' +
-    '14号线：水土、王家桥、草家湾、悦港大道、花石沟、方家山、竹林湾、高堡湖、空港工业园、盛家林、举人坝、谭家院子、王家镇、贺家寨、石船、御临\n' +
-    '15号线：双碑、井口、同兴、礼嘉、平场、湖霞街、鸳鸯、鸳鸯东、服装城大道、长河、新龙湾、工业园区、天堡村、白石村、生基堡、方元坝\n' +
-    '16号线：向家岗、桂花湾、水土、水土北、雨台山西、胡家桥、复兴\n' +
-    '17号线：几江、滨江新城、土堡、双福南、双福、双福北、走马、龙潭沟、金凤南、金凤北、福来村、曾家、虎溪、陈家桥、陈家桥北、西永\n' +
-    '环线：重庆西、上桥、凤鸣山、凤天路、天星桥、沙坪坝、沙正街、玉带山、南桥寺、体育公园、冉家坝、动步公园、洪湖东路、民安大道、重庆北站南广场、渝鲁、五里店、弹子石、涂山、仁济、上新街、上浩、海棠溪、罗家坝、四公里、南湖、海峡路、谢家湾、奥体中心、陈家坪、彩云湖、二郎、华龙、重庆西';
-
-// 对文字版的地图信息做处理，输出map对象
-var temp_list = map_str.split('\n');
-for (var i in temp_list) {
-    var l = temp_list[i].split('：');
-    map[l[0]] = l[1].split('、')
-}
 
 // 去重之后的所有站点的数组
-var all_list = [];
-for (var line_name in map) {
-    for (var k in map[line_name]) {
-        if (all_list.indexOf(map[line_name][k]) < 0) {
-            all_list.push(map[line_name][k])
-        }
-    }
-}
-console.log(map);
-console.log(all_list);
-
-var map_input = {}
-for (var i = 0; i < all_list.length; i++) {
-    var obj = {};
-    for (var j = 0; j < all_list.length; j++) {
-        if (i !== j) {
-            obj[all_list[j]] = 1;
-        }
-    }
-    map_input[all_list[i]] = obj;
-}
-
-console.log(map_input)
+// var sites_list = [];
+// for (var line_name in lines) {
+//     for (var k in lines[line_name]) {
+//         if (sites_list.indexOf(lines[line_name][k]) < 0) {
+//             sites_list.push(lines[line_name][k])
+//         }
+//     }
+// }
 
 // 看看重复的有多少
-var duplicate = {};
-for (var line_name in map) {
-    for (var k in map[line_name]) {
-        duplicate[map[line_name][k]] = duplicate[map[line_name][k]] ? duplicate[map[line_name][k]] + 1 : 1;
-    }
-}
-console.log(duplicate)
-toastr.options.positionClass = "toast-top-center";
-toastr.options.timeOut = '3000';
+// var duplicate = {};
+// for (var line_name in lines) {
+//     for (var k in lines[line_name]) {
+//         duplicate[lines[line_name][k]] = duplicate[lines[line_name][k]] ? duplicate[lines[line_name][k]] + 1 : 1;
+//     }
+// }
 
 // 站点位置录入
-var positions = temp_position_obj;
-var $map = $('#map');
-var index = Object.keys(temp_position_obj).length - 1;
-toastr.warning('下一个录入:' + all_list[++index]);
-$map.click(function (e) {
-    console.log(all_list[index] + '  offsetX:' + e.offsetX + ';offsetY:' + e.offsetY);
-    if (index > all_list - 1) {
-        toastr.success('已全部录入完毕');
-        return false;
-    }
-    positions[all_list[index]] = {
-        x: e.offsetX,
-        y: e.offsetY
-    };
-    console.log(JSON.stringify(positions));
-    toastr.warning('下一个录入:' + all_list[++index]);
-});
+// var $map = $('#map');
+// var index = Object.keys(positions).length - 1;
+// toastr.warning('下一个录入:' + sites_list[++index]);
+// $map.click(function (e) {
+//     if (index > sites_list - 1) {
+//         toastr.success('已全部录入完毕');
+//         return false;
+//     }
+//     positions[sites_list[index]] = {
+//         x: e.offsetX,
+//         y: e.offsetY
+//     };
+//     toastr.warning('下一个录入:' + sites_list[++index]);
+// });
+// console.log(positions)
+
+// 构造一个完整的map_input对象用于输入算法公式计算
+// window.map_input = {};
+// for(var name in positions){
+//     map_input[name] = {};
+//     for(var other in positions){
+//         if(name != other){
+//             map_input[name][other] = Infinity; // 先设置成无穷大
+//         }
+//     }
+// }
+// // 先沿着每条轻轨线构造两个站点之间的路径长度
+// for(var line_name in lines){
+//     var line_sites = lines[line_name];
+//     for(var i = 1; i < line_sites.length; i++){
+//         var curr_site = line_sites[i];
+//         var last_site = line_sites[i-1];
+//         var dis = Math.sqrt(Math.pow(positions[curr_site].x - positions[last_site].x, 2) + Math.pow(positions[curr_site].y - positions[last_site].y, 2))
+//         map_input[curr_site][last_site] = map_input[last_site][curr_site] = dis;
+//     }
+// }

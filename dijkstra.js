@@ -1,4 +1,4 @@
-var Dijkstra = (function (undefined) {
+window.Dijkstra = (function (undefined) {
 
 	var extractKeys = function (obj) {
 		var keys = [], key;
