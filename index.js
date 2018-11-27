@@ -41,7 +41,7 @@ function start(){
     var site_start,site_end;
     map_ctx.clearRect(0,0,1920,1289);
     toastr.clear();
-    toastr.warning('请在地图上点击任意站点作为出发地！','选择出发地');
+    toastr.success('请在地图上点击任意站点作为出发地！','选择出发地');
     $map.find('i.site-point').remove();
     $map.off('click').on('click',(function(e){
         var site = find_site(positions, e.offsetX, e.offsetY);
@@ -49,7 +49,7 @@ function start(){
         site_start = site;
 
         toastr.clear();
-        toastr.warning('请在地图上点击任意站点作为目的地！','选择目的地');
+        toastr.success('请在地图上点击任意站点作为目的地！','选择目的地');
         $map.off('click').on('click',(function(e){
             var site = find_site(positions, e.offsetX, e.offsetY);
             draw_point($('#map_container'), positions[site].x, positions[site].y);
@@ -64,7 +64,7 @@ function start(){
 function show_start_tip(){
     $map.off('click');
     toastr.clear();
-    toastr.warning('<div><button id="start" onclick="window.start()">开始规划路线</button></div>','点击按钮开始您的轻轨旅程');
+    toastr.success('<div><button id="start" onclick="window.start()">开始规划路线</button></div>','点击按钮开始您的轻轨旅程');
 }
 
 show_start_tip();
