@@ -3,6 +3,7 @@ toastr.options.positionClass = "toast-top-center";
 toastr.options.timeOut = 0;
 toastr.options.extendedTimeOut = 0;
 
+var positions = window.positions, map_input = window.map_input;
 var graph = new Dijkstra(map_input);
 var $map = $('#map');
 var map_ctx=document.getElementById("map-canvas").getContext("2d");
@@ -34,6 +35,21 @@ function draw_path(pointList){
         map_ctx.lineTo(point.x, point.y);
         map_ctx.stroke();
     }
+}
+
+// 在地图上点击后，找到最近的点
+function find_site(positions, x, y){
+    // 寻找距离鼠标点击处最近的站点，以点击点到站点的直线距离最小作为判断依据
+    var min_dis = Infinity;
+    var nearest_site = '';
+    for(var name in positions){
+        var dis = Math.pow(positions[name].x - x, 2) + Math.pow(positions[name].y - y, 2)
+        if(dis < min_dis){
+            min_dis = dis;
+            nearest_site = name;
+        }
+    }
+    return nearest_site;
 }
 
 // 点击按钮后开始计算路线

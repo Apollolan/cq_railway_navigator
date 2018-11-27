@@ -407,5 +407,3 @@ window.map_input = (function(positions){
     }
     return map_input;
 })(window.positions);
-
-console.log(map_input)
