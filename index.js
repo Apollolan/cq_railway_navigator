@@ -4,28 +4,48 @@ toastr.options.timeOut = 0;
 toastr.options.extendedTimeOut = 0;
 
 var graph = new Dijkstra(map_input);
-var $map_container = $('#map_container');
 var $map = $('#map');
+var map_ctx=document.getElementById("map-canvas").getContext("2d");
+var point_radius = 8; // 站点圆心半径
 
 // 在指定的坐标上画圆点
 function draw_point($container, x, y){
     var $point = $('<i class="site-point"></i>');
-    var point_radius = 8;
     $point.attr('style','position:absolute;border:'+point_radius+'px solid red;border-radius:'+point_radius+'px;');
     $point.css('left', x - point_radius);
     $point.css('top', y - point_radius);
     $container.append($point);
 }
 
+// 在canvas上绘制路线
+function draw_path(pointList){
+    map_ctx.strokeStyle = "#FF0000";
+    map_ctx.fillStyle = "#FF0000";
+    map_ctx.lineWidth = 3;
+    for(var i = 1; i < pointList.length; i++){
+        var point = positions[pointList[i]];
+        map_ctx.beginPath();
+        map_ctx.arc(point.x, point.y,point_radius,0,2*Math.PI);
+        map_ctx.fill();
+    }
+    map_ctx.moveTo(positions[pointList[0]].x, positions[pointList[0]].y);
+    for(var j = 1; j < pointList.length; j++){
+        var point = positions[pointList[j]];
+        map_ctx.lineTo(point.x, point.y);
+        map_ctx.stroke();
+    }
+}
+
 // 点击按钮后开始计算路线
 function start(){
     var site_start,site_end;
+    map_ctx.clearRect(0,0,1920,1289);
     toastr.clear();
     toastr.warning('请在地图上点击任意站点作为出发地！','选择出发地');
-    $map_container.find('i.site-point').remove();
+    $map.find('i.site-point').remove();
     $map.off('click').on('click',(function(e){
         var site = find_site(positions, e.offsetX, e.offsetY);
-        draw_point($map_container, positions[site].x, positions[site].y);
+        draw_point($map, positions[site].x, positions[site].y);
         site_start = site;
 
         toastr.clear();
@@ -35,7 +55,7 @@ function start(){
             draw_point($('#map_container'), positions[site].x, positions[site].y);
             site_end = site;
             show_start_tip();
-            console.log(graph.findShortestPath(site_start, site_end));
+            draw_path(graph.findShortestPath(site_start, site_end));
         }));
     }));
 }
